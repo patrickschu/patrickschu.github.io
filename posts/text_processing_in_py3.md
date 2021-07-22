@@ -1,11 +1,11 @@
 # String processing in Python
 - [String processing in Python](#string-processing-in-python)
-    - [1. Reading a text file](#1-reading-a-text-file)
-    - [2. Basic string operations: Splitting text, cleaning up text/whitespace, identifying punctuation](#2-basic-string-operations-splitting-text-cleaning-up-textwhitespace-identifying-punctuation)
-    - [3. Basic text processing: tokenization](#3-basic-text-processing-tokenization)
-    - [4. String interpolation: using variables in strings](#4-string-interpolation-using-variables-in-strings)
-    - [5. Escaping characters](#5-escaping-characters)
-    - [6. Regular Expressions](#6-regular-expressions)
+    - [1. Reading a text file](#reading-a-text-file)
+    - [2. Basic string operations: Splitting text, cleaning up text/whitespace, identifying punctuation](#basic-string-operations-splitting-text-cleaning-up-textwhitespace-identifying-punctuation)
+    - [3. Basic text processing: tokenization](#basic-text-processing-tokenization)
+    - [4. String interpolation: using variables in strings](#string-interpolation-using-variables-in-strings)
+    - [5. Escaping characters](#escaping-characters)
+    - [6. Regular Expressions](#regular-expressions)
     - [Appendix: String processing gotchas](#appendix-string-processing-gotchas)
 
 
@@ -104,7 +104,7 @@ The most barebones, naive tokenization is the split on whitespace:
 The issues with this tokenization are obvious - punctuation sticks to the tokens, some punctuation such as hyphens is not treated appropriately, etc. 
 A slightly more sophisticated tokenization can be achieved the inbuilt re module, as described above.
 
-For any halfway serious attempt, Python packages such as [spacy](https://spacy.io/) or NLTK(https://www.nltk.org/) offer much more performant and well-developed tokenizers. 
+For any halfway serious attempt, Python packages such as [spacy](https://spacy.io/) or [NLTK](https://www.nltk.org/) offer much more performant and well-developed tokenizers. 
 
 
 ### 4. String interpolation: using variables in strings
