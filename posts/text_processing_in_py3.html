@@ -1,0 +1,133 @@
+<h1 id="string-processing-in-python">String processing in Python</h1>
+<ul class="incremental">
+<li><a href="#string-processing-in-python">String processing in Python</a>
+<ul class="incremental">
+<li><a href="#reading-a-text-file">1. Reading a text file</a></li>
+<li><a href="#basic-string-operations-splitting-text-cleaning-up-textwhitespace-identifying-punctuation">2. Basic string operations: Splitting text, cleaning up text/whitespace, identifying punctuation</a></li>
+<li><a href="#basic-text-processing-tokenization">3. Basic text processing: tokenization</a></li>
+<li><a href="#string-interpolation-using-variables-in-strings">4. String interpolation: using variables in strings</a></li>
+<li><a href="#escaping-characters">5. Escaping characters</a></li>
+<li><a href="#regular-expressions">6. Regular Expressions</a></li>
+<li><a href="#appendix-string-processing-gotchas">Appendix: String processing gotchas</a></li>
+</ul></li>
+</ul>
+<p>This is a very basic introduction to string processing in Python.<br />
+It addresses usage in Python 3 only - see <a href="https://www.pitt.edu/~naraehan/python2/unicode.html">here</a> for a guide to string processing in Python 2.</p>
+<p>This guide focuses on standard text processing tasks such as reading files and processing text.</p>
+<p>It might be be useful for people newer to Python who are working with documents, social media posts, or other text input.</p>
+<h3 id="reading-a-text-file">1. Reading a text file</h3>
+<p>The below example illustrates some best practices.</p>
+<pre><code># reading the file sample_file_txt
+with open(&quot;sample_file.txt&quot;, &quot;r&quot;, encoding=&quot;utf-8&quot;) as filein:
+    text = filein.read() </code></pre>
+<p>This snippet shows:</p>
+<ol class="incremental">
+<li><p>File opening should happen using a context manager(), i.e. <code>with open() as</code>.<br />
+This takes care of hassles such as opening and closing files properly, and erroring out as orderly as possible.<br />
+The context manager helps avoid issues with missing or corrupted data in files, which can be really hard to debug.</p></li>
+<li><p>An encoding is specified in the <code>open()</code> command.<br />
+This is not a required argument to <a href="https://docs.python.org/3/library/functions.html#open">open()</a>, but people seem to agree that it kind of should be.<br />
+The problem is if you do not set it, the Python will use different encoding schemes based on the Operating System the code is run on: the <code>encoding</code> argument defaults to &quot;cpb1525&quot; on Windows, and &quot;utf-8&quot; on any other machine.<br />
+In other words, your code will <em>behave differently depending on which machine it is run</em>.<br />
+Even if you are told that you are &quot;only using ASCII anyway&quot;, note that plenty of characters - including the dash that started this phrase, or the &quot;&quot; quotation marks - will lead to your code erroring out on Windows, but not on Unix.</p></li>
+</ol>
+<p>In 99% of cases, Just set the encoding to &quot;utf-8&quot;, unless you have very well-informed reasons to do otherwise.<br />
+Note that the same advice is also given by well-regarded Python experts such as Luciano Ramalho in <a href="https://www.oreilly.com/library/view/fluent-python-2nd/9781492056348/">Fluent Python</a>.</p>
+<h3 id="basic-string-operations-splitting-text-cleaning-up-textwhitespace-identifying-punctuation">2. Basic string operations: Splitting text, cleaning up text/whitespace, identifying punctuation</h3>
+<ol class="incremental">
+<li>Splitting text: Python has a very simple <a href="https://docs.python.org/3.3/library/stdtypes.html?highlight=split#str.split"><code>split</code>()</a> string method.<br />
+Use it e.g. to split a text on whitespace: &quot;Hello friends&quot;.split(). For more sophisticated string splitting, use the <a href="https://docs.python.org/3/library/re.html#re.split"><code>re.split()</code></a> function in the in-built regular expression module <em>re</em>.</li>
+</ol>
+<p>E.g. to split on any non-alphanumeric character:</p>
+<pre><code>import re
+In [4]: re.split(&quot;\W+&quot;, &quot;The user-name is Timmy! (Not `Tommy`)...&quot;)
+# [&#39;The&#39;, &#39;user&#39;, &#39;name&#39;, &#39;is&#39;, &#39;Timmy&#39;, &#39;Not&#39;, &#39;Tommy&#39;, &#39;&#39;]</code></pre>
+<ol class="incremental">
+<li><p>Cleaning up text/whitespace: Python has a <a href="https://docs.python.org/3/library/stdtypes.html?highlight=strip#str.strip">strip()</a> string method.<br />
+E.g. to strip surrounding whitespace from strings:</p>
+<pre><code># note that \n represents a line break
+[i.strip() for i in [&quot;This is Timmy:\n &quot;, &quot;    This is Tommy&quot;]]
+# [&#39;This is Timmy:&#39;, &#39;This is Tommy&#39;]</code></pre></li>
+</ol>
+<p>When trying to strip various characters, Python strip() will remove each instance of either character -<br />
+E.g.</p>
+<pre><code>&quot;Tommy&quot;.strip(&quot;my&quot;) 
+# returns &#39;To&#39;
+&quot;Tommy&quot;.strip(&quot;ym&quot;)
+# returns &#39;To&#39;</code></pre>
+<p>For more sophisticated string splitting, use the <code>re.sub()</code>(<a href="https://docs.python.org/3/library/re.html#re.sub" class="uri">https://docs.python.org/3/library/re.html#re.sub</a>) function in the in-built regular expression module <em>re</em>.</p>
+<p>E.g.</p>
+<pre><code>import re
+re.sub(&quot;my&quot;, &quot;&quot;, &quot;Tommy&quot;)
+# returns &#39;Tom&#39;</code></pre>
+<ol class="incremental">
+<li>Identifying punctuation and numbers: Python's in-built <a href="https://docs.python.org/3/library/string.html">string()</a> module comes with pre-defined collections of characters.</li>
+</ol>
+<p>E.g. use string.punctuation to identify common punctuation characters</p>
+<pre><code>import string
+[i for i in &quot;What a world! Right?&quot; if not i in string.punctuation]
+# [&#39;W&#39;, &#39;h&#39;, &#39;a&#39;, &#39;t&#39;, &#39; &#39;, &#39;a&#39;, &#39; &#39;, &#39;w&#39;, &#39;o&#39;, &#39;r&#39;, &#39;l&#39;, &#39;d&#39;, &#39; &#39;, &#39;R&#39;, &#39;i&#39;, &#39;g&#39;, &#39;h&#39;, &#39;t&#39;]</code></pre>
+<p>Similar collections exist for numbers, alphanumeric characters, etc.<br />
+Note that the string module does not cover unicode methods. The entire Unicode set is covered by Python's <a href="https://docs.python.org/3/library/unicodedata.html">unicodedata</a> package.</p>
+<h3 id="basic-text-processing-tokenization">3. Basic text processing: tokenization</h3>
+<p>The most barebones, naive tokenization is the split on whitespace:</p>
+<pre><code>&quot;The user-name is Timmy! (Not `Tommy`)...&quot;.split()                                                                                                    
+# [&#39;The&#39;, &#39;user-name&#39;, &#39;is&#39;, &#39;Timmy!&#39;, &#39;(Not&#39;, &#39;`Tommy`)...&#39;]</code></pre>
+<p>The issues with this tokenization are obvious - punctuation sticks to the tokens, some punctuation such as hyphens is not treated appropriately, etc.<br />
+A slightly more sophisticated tokenization can be achieved the inbuilt re module, as described above.</p>
+<p>For any halfway serious attempt, Python packages such as <a href="https://spacy.io/">spacy</a> or <a href="https://www.nltk.org/">NLTK</a> offer much more performant and well-developed tokenizers.</p>
+<h3 id="string-interpolation-using-variables-in-strings">4. String interpolation: using variables in strings</h3>
+<p>String interpolation is the process of inserting variable pieces of text into another text. For example:</p>
+<pre><code>for user_name in [&quot;Timi&quot;, &quot;Tammi&quot;, &quot;Tommy&quot;]:
+    print(&quot;User name is&quot;, user_name)
+
+#User name is Timi
+#User name is Tammi
+#User name is Tommy</code></pre>
+<p>The above solution will work fine for printing random output to screen, but Python offers 3 approaches to more convenient string interpolation functions. All of the below will produce the exact same output as the above:</p>
+<ol class="incremental">
+<li><p>f-string: prefix string with an f, insert variable in curly brackets (note that this will not work in older versions of Python 3)</p>
+<pre><code>for user_name in [&quot;Timi&quot;, &quot;Tammi&quot;, &quot;Tommy&quot;]:
+print(f&quot;User name is {user_name}&quot;)</code></pre></li>
+<li><p>format string: insert the variable into the strings <code>format()</code> method (this one offers a lot of formatting options, see <a href="https://docs.python.org/3/library/string.html#formatstrings">here</a>)</p></li>
+</ol>
+<pre><code>for user_name in [&quot;Timi&quot;, &quot;Tammi&quot;, &quot;Tommy&quot;]:
+    print(&quot;User name is {}&quot;.format(user_name)) </code></pre>
+<ol class="incremental">
+<li><p>% operator: similar to other programming languages</p>
+<pre><code>for user_name in [&quot;Timi&quot;, &quot;Tammi&quot;, &quot;Tommy&quot;]:
+print(&quot;User name is %s&quot; %user_name) </code></pre></li>
+</ol>
+<h3 id="escaping-characters">5. Escaping characters</h3>
+<p>Python uses the backslash \ character for escaping. E.g. to insert a quote mark into a string: `&quot;He said &quot;Hello&quot; as he entered the room&quot;. Often times, these issues can be addressed by using single versus double quotes, or triple quotes, as well:</p>
+<pre><code>&#39;He said &quot;Hello&quot; as he entered the room.&#39;
+#He said &quot;Hello&quot; as he entered the room.</code></pre>
+<h3 id="regular-expressions">6. Regular Expressions</h3>
+<p>Regular expressions are important for searching through and editing strings.<br />
+In Python, use the in-built <a href="https://docs.python.org/3/library/re.html#module-re">re</a> module or the external <a href="https://pypi.org/project/regex/">regex</a> module.<br />
+The main advantage of the latter is that it includes fuzzy matching (i.e. edit distance).<br />
+Python's regular expression syntax is similar to the widely used Perl-style Regular expressions; see the official Python <a href="https://docs.python.org/3/library/re.html#regular-expression-syntax">guide</a> and a useful cheat sheet <a href="https://cheatography.com/davechild/cheat-sheets/regular-expressions/">here</a>.</p>
+<h3 id="appendix-string-processing-gotchas">Appendix: String processing gotchas</h3>
+<ol class="incremental">
+<li>Unicode code points</li>
+</ol>
+<p>Note that in Unicode, characters that look identical on the the screen can be represented by different Unicode code points.<br />
+For instance, the character <em>o</em> can be both <a href="https://www.compart.com/en/unicode/U+03BF">U+03BF</a>, the Greek Small Letter Omicron, as well as <a href="https://www.compart.com/en/unicode/U+006F">U+006F</a>, the Latin Small Letter O<br />
+(see the official Unicode <a href="https://util.unicode.org/UnicodeJsps/confusables.jsp">confusables</a> for more examples).</p>
+<p>This can lead unexpected inequalities like the below</p>
+<pre><code>&quot;ο&quot; == &quot;o&quot; # returns False
+# these character look-alikes are represented by different Unicode code points:
+print(&quot;\u03BF&quot;)
+print(&quot;\u006F&quot;)</code></pre>
+<p>Due to different ways of composing characters such as accented vowels, even length comparisons are not necessarily reliable.</p>
+<pre><code>len(&#39;Rhône&#39;) == len(&#39;Rhône&#39;)
+# False
+# The first version is length 5, as expected; the second is length 6 since the &#39;^&#39; counts as a separate character in this instance.  
+# Recreate this like so - note that the o circumflexe takes 2 characters in one version
+print(&quot;Rh\u006F\u0302ne&quot;)
+print(&quot;Rh\u00F4ne&quot;)</code></pre>
+<p>When dealing with larger sets of texts, <a href="https://docs.python.org/3/library/unicodedata.html#unicodedata.normalize">Unicode normalization</a> is important to avoid issues like the above.</p>
+<ol class="incremental">
+<li><p>Most of the advice you find for string processing in Python 2, e.g. on Stackoverflow, does not translate to Python 3 at all. Strings were one of the major changes (and improvements) in Python 3.</p></li>
+<li><p>What quote marks should be used, e.g. <code>'STRING'</code> versus <code>&quot;STRING&quot;</code> versus <code>&quot;&quot;&quot;STRING&quot;&quot;&quot;</code>? It does not really matter.</p></li>
+</ol>
