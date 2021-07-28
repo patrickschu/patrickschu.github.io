@@ -29,32 +29,32 @@ with open("sample_file.txt", "r", encoding="utf-8") as filein:
 
 This snippet shows:
 
-1. File opening should happen using a context manager(), i.e. `with open() as`. 
+1. File opening should happen using a [context manager](https://www.python.org/dev/peps/pep-0343/), i.e. `with open() as`. 
 This takes care of hassles such as opening and closing files properly, and erroring out as orderly as possible. 
 The context manager helps avoid issues with missing or corrupted data in files, which can be really hard to debug.
 
-2. An encoding is specified in the `open()` command.
-This is not a required argument to [open()](https://docs.python.org/3/library/functions.html#open), but people seem  to agree that it kind of should be.
+2. An encoding is specified in the [open()](https://docs.python.org/3/library/functions.html#open) command.
+This is not a required argument to `open()` , but people seem  to agree that it kind of should be.
 The problem is if you do not set it, the Python will use different encoding schemes based on the Operating System the code is run on: the `encoding` argument defaults to  "cpb1525" on  Windows, and "utf-8" on any other machine. 
 In other words, your code will *behave differently depending on which machine it is run*. 
-Even if you are told that you are "only using ASCII anyway", note that plenty of characters - including the dash that started this phrase, or the "" quotation marks - will lead to your code erroring out on Windows, but not on Unix. 
+Even if you are "only using ASCII anyway", note that plenty of characters — including the dash that started this phrase, or the “ quotation marks — will lead to your code erroring out on Windows. 
 
-In 99% of cases, Just set the encoding to "utf-8", unless you have very  well-informed reasons to do otherwise. 
+In 99% of cases, just set the encoding to "utf-8", unless you have very  well-informed reasons to do otherwise. 
 Note that the same advice is also given by well-regarded Python experts such as Luciano Ramalho in [Fluent Python](https://www.oreilly.com/library/view/fluent-python-2nd/9781492056348/). 
 
 ### 2. Basic string operations: Splitting text, cleaning up text/whitespace, identifying punctuation
 
-1. Splitting text: Python has a very simple [`split`()](https://docs.python.org/3.3/library/stdtypes.html?highlight=split#str.split) string method. 
+__Splitting text__: Python has a very simple [`split`()](https://docs.python.org/3.3/library/stdtypes.html?highlight=split#str.split) string method. 
 Use it e.g. to split a text on whitespace: "Hello friends".split(). For more sophisticated string splitting, use the [`re.split()`]( https://docs.python.org/3/library/re.html#re.split) function in the in-built regular expression module *re*.  
 
 E.g. to split on any non-alphanumeric character:
 ```
 import re
-In [4]: re.split("\W+", "The user-name is Timmy! (Not `Tommy`)...")
+re.split("\W+", "The user-name is Timmy! (Not `Tommy`)...")
 # ['The', 'user', 'name', 'is', 'Timmy', 'Not', 'Tommy', '']
 ```
 
-2. Cleaning up text/whitespace: Python has a [strip()](https://docs.python.org/3/library/stdtypes.html?highlight=strip#str.strip) string method. 
+__Cleaning up text, e.g. removing whitespace__: Python has a [strip()](https://docs.python.org/3/library/stdtypes.html?highlight=strip#str.strip) string method. 
 E.g. to strip surrounding whitespace from strings: 
 ```
 # note that \n represents a line break
@@ -71,7 +71,7 @@ E.g.
 # returns 'To'
 ``` 
 
-For more sophisticated string splitting, use the `re.sub()`(https://docs.python.org/3/library/re.html#re.sub) function in the in-built regular expression module *re*.  
+For more sophisticated string splitting, use the [`re.sub()`](https://docs.python.org/3/library/re.html#re.sub) function in the in-built regular expression module *re*.  
 
 E.g. 
 ```
@@ -122,20 +122,20 @@ for user_name in ["Timi", "Tammi", "Tommy"]:
 
 The above solution will work fine for printing random output to screen, but Python offers 3 approaches to more convenient string interpolation functions. All of the below will produce the exact same output as the above:
 
-1. f-string: prefix string with an f, insert variable in curly brackets (note that this will not work in older versions of Python 3)
+1. __f-string__: prefix string with an f, insert variable in curly brackets (note that this will not work in older versions of Python 3)
 ```
 for user_name in ["Timi", "Tammi", "Tommy"]:
 	print(f"User name is {user_name}")
 ``` 
 
-2. format string: insert the variable into the strings `format()` method (this one offers a lot of formatting options, see [here](https://docs.python.org/3/library/string.html#formatstrings))
+2. __format string__: insert the variable into the strings `format()` method (this one offers a lot of formatting options, see [here](https://docs.python.org/3/library/string.html#formatstrings))
 
 ```
 for user_name in ["Timi", "Tammi", "Tommy"]:
 	print("User name is {}".format(user_name)) 
 ```
 
-3. % operator: similar to other programming languages 
+3. __% operator__: similar to other programming languages 
 ```
 for user_name in ["Timi", "Tammi", "Tommy"]:
 	print("User name is %s" %user_name) 
@@ -159,7 +159,7 @@ Python's regular expression syntax is similar to the widely used Perl-style Regu
 
 ### Appendix: String processing gotchas
 
-1. Unicode code points
+__Gotcha 1: Unicode code points v characters__
 
 Note that in Unicode, characters that look identical on the the screen can be represented by different Unicode code points. 
 For instance, the character *o* can be both [U+03BF](https://www.compart.com/en/unicode/U+03BF), the Greek Small Letter Omicron, as well as [U+006F](https://www.compart.com/en/unicode/U+006F), the Latin Small Letter O 
@@ -188,7 +188,11 @@ print("Rh\u00F4ne")
 
 When dealing with larger sets of texts, [Unicode normalization](https://docs.python.org/3/library/unicodedata.html#unicodedata.normalize) is important to avoid issues like the above. 
 
-3. Most of the advice you find for string processing in Python 2, e.g. on Stackoverflow, does not translate to Python 3 at all. Strings were one of the major changes (and improvements) in Python 3. 
+__Gotcha 2: Python 2 v Python 3__ 
+
+Most of the advice you find for string processing in Python 2, e.g. on Stackoverflow, does not translate to Python 3 at all. Strings were one of the major changes (and improvements) in Python 3. 
 
 
-4. What quote marks should be used, e.g. `'STRING'` versus `"STRING"` versus `"""STRING"""`? It does not really matter.
+__Gotcha 3: Different quotation marks__ 
+
+What quote marks should be used, e.g. `'STRING'` versus `"STRING"` versus `"""STRING"""`? It does not really matter.
